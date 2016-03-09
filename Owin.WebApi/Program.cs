@@ -12,9 +12,17 @@ namespace Owin.WebApi
             Console.ReadLine();
         }
 
-        public void Dispose()
+        private bool isDisposed = false;
+        ~Program()
         {
             WebApi.Dispose();
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            if(!isDisposed)
+                WebApi.Dispose();
         }
     }
 }

@@ -1,8 +1,12 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpRequestComposer", "HttpRequestComposer\HttpRequestComposer.csproj", "{D932928F-C298-4FBE-8591-38540AB9D6CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpRequestComposer.Tests", "HttpRequestComposer.Tests\HttpRequestComposer.Tests.csproj", "{A668AACA-5CE2-48C2-BD58-CDDA537E97B7}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.WebApi", "Owin.WebApi\Owin.WebApi.csproj", "{2FE48DF6-5DA9-401D-BD85-C659D04B31CC}"
 EndProject
 Global
