@@ -55,6 +55,8 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -99,7 +101,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="HttpGetTestsBase.cs" />
+    <Compile Include="ValueconverterTests.cs" />
+    <Compile Include="HttpRequestModelTests.cs" />
+    <Compile Include="HttpHelpersTests.cs" />
+    <Compile Include="HttpRequestManagerTests.cs" />
     <Compile Include="ApiSelfHostedTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

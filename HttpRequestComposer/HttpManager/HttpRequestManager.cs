@@ -60,6 +60,7 @@ namespace HttpRequestComposer.HttpManager
             };
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Connection.Add("Keep-Alive");
 
             if(Model.ContentType != null)
                 httpClient.DefaultRequestHeaders.Accept.Add(Model.ContentType);

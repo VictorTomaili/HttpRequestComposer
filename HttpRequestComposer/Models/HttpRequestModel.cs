@@ -11,7 +11,7 @@ using PropertyChanged;
 namespace HttpRequestComposer.Models
 {
     [ImplementPropertyChanged]
-    public class MainWindowModel : IHttpRequestModel
+    public class HttpRequestModel : IHttpRequestModel
     {
         public List<string> HttpMethods { get; set; }
         public List<string> Encodings { get; set; }
@@ -25,7 +25,7 @@ namespace HttpRequestComposer.Models
         public Encoding Encoding { get; set; }
         public string Response { get; set; }
 
-        public MainWindowModel()
+        public HttpRequestModel()
         {
             HttpMethods = new List<string>();
             Encodings = new List<string>();

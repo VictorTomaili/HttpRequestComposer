@@ -5,9 +5,9 @@ using System.Windows.Data;
 
 namespace HttpRequestComposer
 {
-    public class VisibilityConverter<T> : IValueConverter
+    public class BooleanConverter<T> : IValueConverter
     {
-        public VisibilityConverter(T trueValue, T falseValue)
+        public BooleanConverter(T trueValue, T falseValue)
         {
             True = trueValue;
             False = falseValue;

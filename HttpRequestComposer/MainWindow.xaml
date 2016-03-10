@@ -6,8 +6,8 @@
         xmlns:texts="clr-namespace:HttpRequestComposer.Local.MainWindow"
         xmlns:local="clr-namespace:HttpRequestComposer"
         mc:Ignorable="d"
-        Height="400"
-        Width="768"
+        Height="700"
+        Width="1024"
         FontSize="16"
         Title="{Binding Source={x:Static texts:Main.Title}}">
     <Window.Resources>

@@ -28,7 +28,7 @@ namespace HttpRequestComposer.HttpManager
         public static StringBuilder Stringify(this IHttpRequestModel model)
         {
             var builder = new StringBuilder();
-            if (string.IsNullOrEmpty(model.Content))
+            if (!string.IsNullOrEmpty(model.Content))
                 builder.Append("Request Content: ").Append(model.Content).Append(Environment.NewLine);
             return builder;
         }
@@ -44,7 +44,8 @@ namespace HttpRequestComposer.HttpManager
                 .AppendEnumerable(response.Headers)
                 .Append(Environment.NewLine);
 
-            if (response.Content != null)
+            var content = response.Content?.ReadAsStringAsync().Result;
+            if (!string.IsNullOrEmpty(content?.Trim()))
                 builder.AppendLine("Response Content: ")
                     .AppendLine(response.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
 
@@ -72,12 +73,12 @@ namespace HttpRequestComposer.HttpManager
             return builder;
         }
 
-        public static bool IsUrl(this string val)
+        public static bool IsHttpLink(this string val)
         {
             return Regex.Match(val, @"^http(s)?://([\w-]+.)+[\w-]+(/[\w- ./?%&=])?(/)?$").Success;
         }
 
-        public static void AddRange(this HttpRequestHeaders headers, IDictionary<string, string> dictionary)
+        public static void AddRange(this HttpHeaders headers, IDictionary<string, string> dictionary)
         {
             foreach (var keyValuePair in dictionary)
             {

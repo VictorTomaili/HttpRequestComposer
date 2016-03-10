@@ -8,7 +8,7 @@ namespace HttpRequestComposer
 {
     public partial class MainWindow : Window
     {
-        public MainWindowModel Model { get; set; } = new MainWindowModel();
+        public HttpRequestModel Model { get; set; } = new HttpRequestModel();
 
         public MainWindow()
         {

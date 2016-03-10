@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Owin.WebApi;
@@ -8,6 +9,15 @@ namespace HttpRequestComposer.Tests
 {
     public abstract class ApiSelfHostedTestBase
     {
+        public MediaTypeWithQualityHeaderValue MediaTypeXml
+            => new MediaTypeWithQualityHeaderValue("application/xml");
+
+        public MediaTypeWithQualityHeaderValue MediaTypeJson
+                    => new MediaTypeWithQualityHeaderValue("application/json");
+
+        public MediaTypeWithQualityHeaderValue MediaTypeHtml
+            => new MediaTypeWithQualityHeaderValue("text/html");
+
         public void InHost(Action<string> action)
         {
             var url = $"http://localhost:3{Thread.CurrentThread.ManagedThreadId:D4}/";

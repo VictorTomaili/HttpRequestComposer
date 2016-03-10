@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace Owin.WebApi
 {
@@ -15,16 +20,35 @@ namespace Owin.WebApi
             return "value";
         }
 
-        public void Post([FromBody]string value)
+        public async Task<ResponseMessageResult> Post()
         {
+            var value = await Request.Content.ReadAsStringAsync()
+                .ContinueWith(task => task.Result);
+
+            Console.WriteLine(value);
+
+            if(!value.Contains("world"))
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+            return this.ResponseMessage(new HttpResponseMessage(HttpStatusCode.Created));
         }
 
-        public void Put(int id, [FromBody]string value)
+        public async Task<ResponseMessageResult> Put(int id)
         {
+            var value = await Request.Content.ReadAsStringAsync()
+            .ContinueWith(task => task.Result);
+
+            Console.WriteLine(value);
+
+            if (!value.Contains("world"))
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+
+            return this.ResponseMessage(new HttpResponseMessage(HttpStatusCode.Accepted));
         }
 
-        public void Delete(int id)
+        public ResponseMessageResult Delete(int id)
         {
+            return this.ResponseMessage(new HttpResponseMessage(HttpStatusCode.NoContent));
         }
     }
 }

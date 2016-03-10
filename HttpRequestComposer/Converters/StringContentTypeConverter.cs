@@ -15,7 +15,7 @@ namespace HttpRequestComposer
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var val = value as string;
-            MediaTypeWithQualityHeaderValue mediaType = null;
+            MediaTypeWithQualityHeaderValue mediaType;
             MediaTypeWithQualityHeaderValue.TryParse(val, out mediaType);
             return mediaType;
         }

@@ -17,7 +17,7 @@ namespace HttpRequestComposer
             var val = value as string;
             if (val == null) return null;
 
-            return val.IsUrl() ?
+            return val.IsHttpLink() ?
                 new Uri(val) :
                 new Uri($"http://{val}");
         }
