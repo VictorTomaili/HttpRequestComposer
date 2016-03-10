@@ -13,8 +13,7 @@ namespace HttpRequestComposer.HttpManager
         MediaTypeWithQualityHeaderValue ContentType { get; set; }
         string UserAgent { get; set; }
         Dictionary<string, string> Headers { get; set; }
-        StringContent Content { get; set; }
-        bool BodyIsFormData { get; set; }
+        string Content { get; set; }
         Encoding Encoding { get; set; }
     }
 }

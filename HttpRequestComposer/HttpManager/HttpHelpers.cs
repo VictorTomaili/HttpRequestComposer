@@ -10,37 +10,45 @@ namespace HttpRequestComposer.HttpManager
 {
     public static class HttpHelpers
     {
-        public static string AsFormattedString(this HttpResult result)
+        public static StringBuilder Stringify(this HttpRequestMessage request)
         {
-            var builder = new StringBuilder();
-
-            builder.AppendLine("General:")
-                .Append(result.HttpRequestMessage.Method).Append(" ")
-                .Append(result.HttpRequestMessage.RequestUri).Append(" ")
-                .Append("HTTP/").Append(result.HttpRequestMessage.Version).Append(Environment.NewLine)
-                .Append("Host: ").Append(result.HttpRequestMessage.RequestUri.Host).Append(Environment.NewLine)
+            return new StringBuilder()
+                .AppendLine("General:")
+                .Append(request.Method).Append(" ")
+                .Append(request.RequestUri).Append(" ")
+                .Append("HTTP/").Append(request.Version).Append(Environment.NewLine)
+                .Append("Host: ").Append(request.RequestUri.Host).Append(Environment.NewLine)
                 .Append(Environment.NewLine)
                 .AppendLine("Request Headers:")
-                .AppendEnumerable(result.HttpRequestMessage.Headers)
-                .AppendEnumerable(result.HttpRequestMessage.Properties)
+                .AppendEnumerable(request.Headers)
+                .AppendEnumerable(request.Properties)
                 .Append(Environment.NewLine);
+        }
 
-            if (result.HttpRequestMessage.Content != null)
-                builder.Append("Request Content: ").Append(result.HttpRequestMessage.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
+        public static StringBuilder Stringify(this IHttpRequestModel model)
+        {
+            var builder = new StringBuilder();
+            if (string.IsNullOrEmpty(model.Content))
+                builder.Append("Request Content: ").Append(model.Content).Append(Environment.NewLine);
+            return builder;
+        }
 
-            builder.Append("Response Status: ")
-                .Append((int)result.HttpResponseMessage.StatusCode)
-                .Append(" (").Append(result.HttpResponseMessage.StatusCode).Append(")")
+        public static StringBuilder Stringify(this HttpResponseMessage response)
+        {
+            var builder = new StringBuilder()
+                .Append("Response Status: ")
+                .Append((int)response.StatusCode)
+                .Append(" (").Append(response.StatusCode).Append(")")
                 .Append(Environment.NewLine)
                 .AppendLine("Response Headers:")
-                .AppendEnumerable(result.HttpResponseMessage.Headers)
+                .AppendEnumerable(response.Headers)
                 .Append(Environment.NewLine);
 
-            if (result.HttpResponseMessage.Content != null)
+            if (response.Content != null)
                 builder.AppendLine("Response Content: ")
-                    .AppendLine(result.HttpResponseMessage.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
+                    .AppendLine(response.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
 
-            return builder.ToString();
+            return builder;
         }
 
         public static StringBuilder AppendEnumerable<T>(this StringBuilder builder, IEnumerable<KeyValuePair<string, T>> keyValuePairs)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace HttpRequestComposer.HttpManager
@@ -23,7 +24,8 @@ namespace HttpRequestComposer.HttpManager
             return new HttpResult
             {
                 HttpRequestMessage = httpRequestMessage,
-                HttpResponseMessage = httpResponseMessage
+                HttpResponseMessage = httpResponseMessage,
+                Model = Model
             };
         }
 
@@ -38,9 +40,13 @@ namespace HttpRequestComposer.HttpManager
 
         public HttpRequestMessage CreateHttpRequestMessage()
         {
+            StringContent content = null;
+            if (!string.IsNullOrEmpty(Model.Content))
+                content = new StringContent(Model.Content, Model.Encoding ?? Encoding.UTF8, Model.ContentType.MediaType);
+
             return new HttpRequestMessage
             {
-                Content = Model.Content,
+                Content = content,
                 Method = Model.HttpMethod,
                 RequestUri = Model.Url
             };
@@ -66,11 +72,5 @@ namespace HttpRequestComposer.HttpManager
 
             return httpClient;
         }
-    }
-
-    public class HttpResult
-    {
-        public HttpRequestMessage HttpRequestMessage { get; set; }
-        public HttpResponseMessage HttpResponseMessage { get; set; }
     }
 }

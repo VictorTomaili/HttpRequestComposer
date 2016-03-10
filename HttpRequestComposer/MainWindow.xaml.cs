@@ -12,8 +12,6 @@ namespace HttpRequestComposer
 
         public MainWindow()
         {
-            //TODO: Çözüm bulmak gerek
-            StringContentConverter.Instance = new StringContentConverter(Model);
             this.DataContext = this;
             InitializeComponent();
         }
@@ -34,7 +32,9 @@ namespace HttpRequestComposer
         private async void SendHttpRequest()
         {
             await new HttpRequestManager(Model).SendRequestAsync().ContinueWith(response =>
-                SetResponseText(response.Exception?.ToString() ?? response.Result.AsFormattedString()));
+            {
+                SetResponseText(response.Exception?.ToString() ?? response.Result.ToString());
+            });
         }
 
         private void SetResponseText(string value)

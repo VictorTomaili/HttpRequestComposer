@@ -13,6 +13,5 @@
         public static string Headers => "Headers:";
         public static string HeaderPerLine => "HeaderPerLine:";
         public static string Body => "Body:";
-        public static string FormData => "Form Data";
     }
 }

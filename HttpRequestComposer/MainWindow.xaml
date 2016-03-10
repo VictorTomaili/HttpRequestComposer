@@ -27,6 +27,8 @@
             x:Key="HeaderKeyValueConverter"/>
         <local:HttpMethodConverter
             x:Key="HttpMethodConverter"/>
+        <local:StringEncodingConverter
+            x:Key="StringEncodingConverter"/>
     </Window.Resources>
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
@@ -69,7 +71,8 @@
                       VerticalContentAlignment="Center"
                       ItemsSource="{Binding Model.HttpMethods, Mode=OneWay}"
                       SelectedValue="{Binding Model.HttpMethod, Mode=TwoWay, Converter={StaticResource HttpMethodConverter}}"
-                      Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive, Converter={StaticResource HttpMethodComboBoxVisibility}}"/>
+                      Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive,
+                                    Converter={StaticResource HttpMethodComboBoxVisibility}}"/>
 
             <TextBox x:Name="CustomHttpMethod"
                      Grid.Column="1"
@@ -78,7 +81,8 @@
                      Margin="3"
                      Padding="3,0,0,0"
                      Text="{Binding Model.HttpMethod, Mode=TwoWay, Converter={StaticResource HttpMethodConverter}}"
-                      Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive, Converter={StaticResource CustomHttpMethodVisibility}}"/>
+                      Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive,
+                                    Converter={StaticResource CustomHttpMethodVisibility}}"/>
 
             <TextBox x:Name="HostAddressTextBox"
                      Grid.Column="2"
@@ -104,7 +108,6 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
@@ -129,14 +132,19 @@
                          Margin="3"
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
-                         Text="{Binding Model.ContentType, Mode=TwoWay, Converter={StaticResource StringContentTypeConverter}}"/>
+                         Text="{Binding Model.ContentType, Mode=TwoWay,
+                                Converter={StaticResource StringContentTypeConverter}}"/>
 
-                <Button x:Name="SelectContentTypeButton"
-                        Grid.Column="2"
-                        Grid.Row="0"
-                        VerticalAlignment="Center"
-                        Margin="3"
-                        Content="{Binding Source={x:Static texts:Main.Select}}"/>
+                <ComboBox x:Name="EncodingsComboBox"
+                      Grid.Column="1"
+                      Grid.Row="0"
+                      Width="150"
+                      HorizontalAlignment="Right"
+                      Margin="3"
+                      VerticalContentAlignment="Center"
+                      ItemsSource="{Binding Model.Encodings, Mode=OneWay}"
+                      SelectedValue="{Binding Model.Encoding, Mode=TwoWay,
+                                        Converter={StaticResource StringEncodingConverter}}"/>
 
                 <Label Grid.Row="1"
                        Grid.Column="0"
@@ -153,13 +161,6 @@
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
                          Text="{Binding Model.UserAgent, Mode=TwoWay}"/>
-
-                <Button x:Name="SelectUserAgentButton"
-                        Grid.Column="2"
-                        Grid.Row="1"
-                        VerticalAlignment="Center"
-                        Margin="3"
-                        Content="{Binding Source={x:Static texts:Main.Select}}"/>
 
                 <Label Grid.Row="2"
                        Grid.Column="0"
@@ -184,13 +185,6 @@
                          Margin="3"
                          Text="{Binding Model.Headers, Mode=TwoWay, Converter={StaticResource HeaderKeyValueConverter}}"/>
 
-                <Button x:Name="EditHeadersButton"
-                        Grid.Column="2"
-                        Grid.Row="2"
-                        VerticalAlignment="Top"
-                        Margin="3,6,3,3"
-                        Content="{Binding Source={x:Static texts:Main.Edit}}"/>
-
                 <Label Grid.Row="4"
                        Grid.Column="0"
                        VerticalAlignment="Stretch"
@@ -199,22 +193,6 @@
                        Margin="3"
                        Content="{Binding Source={x:Static texts:Main.Body}}"/>
 
-                <CheckBox x:Name="FormDataCheckBox"
-                          Grid.Row="4"
-                          Grid.Column="0"
-                          HorizontalAlignment="Right"
-                          VerticalContentAlignment="Top"
-                          FontSize="12"
-                          Margin="3,34,3,3"
-                          IsChecked="{Binding Model.BodyIsFormData, Mode=TwoWay}">
-
-                    <Label VerticalAlignment="Top"
-                           Margin="0"
-                           VerticalContentAlignment="Top"
-                           Padding="0"
-                           Content="{Binding Source={x:Static texts:Main.FormData}}"/>
-                </CheckBox>
-
                 <TextBox x:Name="BodyTextBox"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -222,14 +200,7 @@
                          Grid.Row="4"
                          Margin="3"
                          HorizontalAlignment="Stretch"
-                         Text="{Binding Model.Content, Mode=TwoWay, Converter={x:Static local:StringContentConverter.Instance}}"/>
-
-                <Button x:Name="EditBodyButton"
-                        Grid.Column="2"
-                        Grid.Row="4"
-                        VerticalAlignment="Top"
-                        Margin="3,6,3,3"
-                        Content="{Binding Source={x:Static texts:Main.Edit}}"/>
+                         Text="{Binding Model.Content, Mode=TwoWay}"/>
 
                 <GridSplitter Grid.Row="3"
                               Grid.Column="0"

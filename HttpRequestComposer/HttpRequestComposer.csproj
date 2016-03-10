@@ -37,6 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.JScript" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -70,13 +71,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\HttpMethodConverter.cs" />
-    <Compile Include="Converters\StringContentConverter.cs" />
+    <Compile Include="Converters\StringEncodingConverter.cs" />
     <Compile Include="Converters\StringContentTypeConverter.cs" />
     <Compile Include="Converters\UriStringConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\HeaderKeyValueConverter.cs" />
-    <Compile Include="HttpManager\ExceptionHeplers.cs" />
+    <Compile Include="HttpManager\HttpResult.cs" />
     <Compile Include="HttpManager\IHttpRequestModel.cs" />
     <Compile Include="Texts\MainWindow.Texts.cs" />
     <Page Include="MainWindow.xaml">
@@ -88,7 +89,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="HttpManager\HttpRequestManager.cs" />
-    <Compile Include="HttpManager\ResponseContainer.cs" />
     <Compile Include="HttpManager\HttpHelpers.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

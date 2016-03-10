@@ -14,23 +14,35 @@ namespace HttpRequestComposer.Models
     public class MainWindowModel : IHttpRequestModel
     {
         public List<string> HttpMethods { get; set; }
+        public List<string> Encodings { get; set; }
         public HttpMethod HttpMethod { get; set; }
         public Uri Url { get; set; }
         public MediaTypeWithQualityHeaderValue ContentType { get; set; }
         public string UserAgent { get; set; }
         public Dictionary<string, string> Headers { get; set; }
         public string Body { get; set; }
-        public StringContent Content { get; set; }
-        public bool BodyIsFormData { get; set; }
+        public string Content { get; set; }
         public Encoding Encoding { get; set; }
         public string Response { get; set; }
 
         public MainWindowModel()
         {
             HttpMethods = new List<string>();
+            Encodings = new List<string>();
             Headers = new Dictionary<string, string>();
 
             InitializeHttpMethods();
+            InitializeEncodings();
+        }
+
+        private void InitializeEncodings()
+        {
+            var encodings = (typeof (Encoding).GetProperties())
+                .Where(s => s.PropertyType == typeof(Encoding))
+                .Select(s => ((Encoding)(s.GetValue(null))).BodyName);
+
+            Encodings.AddRange(encodings);
+            Encoding = Encoding.UTF8;
         }
 
         private void InitializeHttpMethods()
@@ -39,8 +51,7 @@ namespace HttpRequestComposer.Models
                 .Where(s => s.PropertyType == typeof(HttpMethod))
                 .Select(s => s.Name.ToUpper(CultureInfo.InvariantCulture));
 
-            foreach (var method in methods)
-                HttpMethods.Add(method);
+            HttpMethods.AddRange(methods);
 
             HttpMethod = new HttpMethod(HttpMethods.FirstOrDefault());
         }

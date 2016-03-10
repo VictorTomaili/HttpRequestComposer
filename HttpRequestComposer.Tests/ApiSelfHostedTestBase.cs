@@ -17,12 +17,23 @@ namespace HttpRequestComposer.Tests
             }
         }
 
-        public Task InHostAsync(Func<string, Task> action)
+        public async Task<T> InHostAsync<T>(Func<string, Task<T>> action)
         {
             var url = $"http://localhost:3{Thread.CurrentThread.ManagedThreadId:D4}/";
             using (WebApp.Start<Startup>(url))
             {
-                return action(url);
+                return await action(url);
+            }
+        }
+
+        public void ThrowInnerException(Exception ex)
+        {
+            while (true)
+            {
+                if (ex.InnerException == null)
+                    throw ex;
+
+                ex = ex.InnerException;
             }
         }
     }
