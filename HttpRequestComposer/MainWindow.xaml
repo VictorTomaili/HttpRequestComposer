@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:texts="clr-namespace:HttpRequestComposer.Local.MainWindow"
         xmlns:local="clr-namespace:HttpRequestComposer"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:autocomplete="clr-namespace:WpfControls;assembly=WpfControls"
         mc:Ignorable="d"
         Height="700"
         Width="1024"
@@ -29,6 +31,10 @@
             x:Key="HttpMethodConverter"/>
         <local:StringEncodingConverter
             x:Key="StringEncodingConverter"/>
+        <local:ContentTypeSuggestionProvider
+            x:Key="ContentTypeSuggestionProvider" />
+        <local:UserAgentSuggestionProvider
+            x:Key="UserAgentSuggestionProvider" />
     </Window.Resources>
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
@@ -81,7 +87,7 @@
                      Margin="3"
                      Padding="3,0,0,0"
                      Text="{Binding Model.HttpMethod, Mode=TwoWay, Converter={StaticResource HttpMethodConverter}}"
-                      Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive,
+                     Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive,
                                     Converter={StaticResource CustomHttpMethodVisibility}}"/>
 
             <TextBox x:Name="HostAddressTextBox"
@@ -126,12 +132,14 @@
                        Margin="3"
                        Content="{Binding Source={x:Static texts:Main.ContentType}}" />
 
-                <TextBox x:Name="ContentTypeTextBox"
+                <autocomplete:AutoCompleteTextBox x:Name="ContentTypeTextBox"
                          Grid.Column="1"
                          Grid.Row="0"
                          Margin="3"
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
+                         Delay="300"
+                         Provider="{StaticResource ResourceKey=ContentTypeSuggestionProvider}"
                          Text="{Binding Model.ContentType, Mode=TwoWay,
                                 Converter={StaticResource StringContentTypeConverter}}"/>
 
@@ -154,12 +162,14 @@
                        Margin="3"
                        Content="{Binding Source={x:Static texts:Main.UserAgent}}"/>
 
-                <TextBox x:Name="UserAgentTextBox"
+                <autocomplete:AutoCompleteTextBox x:Name="UserAgentTextBox"
                          Grid.Column="1"
                          Grid.Row="1"
                          Margin="3"
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
+                         Delay="300"
+                         Provider="{StaticResource ResourceKey=UserAgentSuggestionProvider}"
                          Text="{Binding Model.UserAgent, Mode=TwoWay}"/>
 
                 <Label Grid.Row="2"
@@ -227,6 +237,18 @@
                      Margin="3,3,3,3"
                      Text="{Binding Model.Response, Mode=OneWay}"/>
         </ScrollViewer>
-    </Grid>
 
+        <xctk:BusyIndicator IsBusy="{Binding Model.IsBusy, Mode=TwoWay}"
+                            Grid.Row="0"
+                            Grid.RowSpan="4"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            DisplayAfter="0">
+            <xctk:BusyIndicator.BusyContentTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Source={x:Static texts:Main.PleaseWait}}"/>
+                </DataTemplate>
+            </xctk:BusyIndicator.BusyContentTemplate>
+        </xctk:BusyIndicator>
+    </Grid>
 </Window>

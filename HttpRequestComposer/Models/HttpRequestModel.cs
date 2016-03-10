@@ -24,6 +24,7 @@ namespace HttpRequestComposer.Models
         public string Content { get; set; }
         public Encoding Encoding { get; set; }
         public string Response { get; set; }
+        public bool IsBusy { get; set; }
 
         public HttpRequestModel()
         {

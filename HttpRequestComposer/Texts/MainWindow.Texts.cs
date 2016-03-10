@@ -1,4 +1,10 @@
-﻿namespace HttpRequestComposer.Local.MainWindow
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Reflection;
+using Newtonsoft.Json;
+
+namespace HttpRequestComposer.Local.MainWindow
 {
     public static class Main
     {
@@ -13,5 +19,7 @@
         public static string Headers => "Headers:";
         public static string HeaderPerLine => "HeaderPerLine:";
         public static string Body => "Body:";
+
+        public static string PleaseWait => "Please Wait";
     }
 }

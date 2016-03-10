@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using HttpRequestComposer.HttpManager;
 using HttpRequestComposer.Models;
+using Newtonsoft.Json;
 
 namespace HttpRequestComposer
 {
@@ -12,7 +17,7 @@ namespace HttpRequestComposer
 
         public MainWindow()
         {
-            this.DataContext = this;
+            DataContext = this;
             InitializeComponent();
         }
 
@@ -31,9 +36,13 @@ namespace HttpRequestComposer
 
         private async void SendHttpRequest()
         {
+            Model.IsBusy = true;
             await new HttpRequestManager(Model).SendRequestAsync().ContinueWith(response =>
             {
                 SetResponseText(response.Exception?.ToString() ?? response.Result.ToString());
+            }).ContinueWith(response =>
+            {
+                Model.IsBusy = false;
             });
         }
 
@@ -44,7 +53,6 @@ namespace HttpRequestComposer
                 Dispatcher.BeginInvoke(new Action<string>(SetResponseText), value);
                 return;
             }
-
             Model.Response = value;
         }
     }

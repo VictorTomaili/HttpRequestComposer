@@ -6,6 +6,7 @@ using System.Windows.Data;
 
 namespace HttpRequestComposer
 {
+    [ValueConversion(typeof(string), typeof(IDictionary<string,string>))]
     public class HeaderKeyValueConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

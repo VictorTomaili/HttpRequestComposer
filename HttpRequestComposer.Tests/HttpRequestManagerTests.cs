@@ -105,6 +105,30 @@ namespace HttpRequestComposer.Tests
             });
         }
 
+        [Fact]
+        public async void HttpRequestManagerPostWrongPostData()
+        {
+            var created = "Response Status: 201 (Created)";
+            await InHostAsync(url =>
+            {
+                url += "api/values";
+                return new HttpRequestManager(new HttpRequestModel
+                {
+                    Url = new Uri(url),
+                    HttpMethod = HttpMethod.Post,
+                    Encoding = Encoding.UTF8,
+                    ContentType = MediaTypeJson,
+                    Content = JsonConvert.SerializeObject(new { value = "world" })
+                }).SendRequestAsync();
+            }).ContinueWith(task =>
+            {
+                Assert.Null(task.Exception);
+
+                var result = task.Result.ToString();
+                Assert.Contains(created, result);
+            });
+        }
+
 
         [Fact]
         public async void HttpRequestManagerPut()

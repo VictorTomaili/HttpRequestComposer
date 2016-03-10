@@ -5,6 +5,7 @@ using System.Windows.Data;
 
 namespace HttpRequestComposer
 {
+    [ValueConversion(typeof(string), typeof(Encoding))]
     public class StringEncodingConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
