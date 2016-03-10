@@ -12,8 +12,10 @@ namespace HttpRequestComposer
 
         public MainWindow()
         {
+            //TODO: Çözüm bulmak gerek
+            StringContentConverter.Instance = new StringContentConverter(Model);
+            this.DataContext = this;
             InitializeComponent();
-            this.DataContext = Model;
         }
 
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
@@ -21,7 +23,7 @@ namespace HttpRequestComposer
             SendHttpRequest();
         }
 
-        private void HostAddressTextBox_OnEnterKeyPress(object sender, KeyEventArgs e)
+        private void TextBox_OnEnterKeyPress(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;
 
@@ -31,42 +33,8 @@ namespace HttpRequestComposer
 
         private async void SendHttpRequest()
         {
-            if (string.IsNullOrEmpty(Model.Url))
-            {
-                MessageBox.Show("Uri is invalid");
-                return;
-            }
-
-            if (!Model.Url.IsUrl())
-                Model.Url = $"http://{Model.Url}";
-
-            var responseManager = new HttpRequestManager(Model.Url);
-
-            try
-            {
-                responseManager.AddHeaderRange(Model.Headers);
-                responseManager.SetContent(Model.ContentType);
-                responseManager.AddHeader("User-Agent", Model.UserAgent);
-
-                await responseManager.SendAsync(Model.HttpMethod).ContinueWith(response =>
-                {
-                    if (response.Exception != null)
-                    {
-                        SetResponseText(response.Exception.ToString());
-                        return;
-                    }
-
-                    SetResponseText(response.Result.AsFormattedString());
-                });
-            }
-            catch (Exception ex)
-            {
-                SetResponseText(ex.InnerExceptionMessage());
-            }
-            finally
-            {
-                responseManager.Dispose();
-            }
+            await new HttpRequestManager(Model).SendRequestAsync().ContinueWith(response =>
+                SetResponseText(response.Exception?.ToString() ?? response.Result.AsFormattedString()));
         }
 
         private void SetResponseText(string value)

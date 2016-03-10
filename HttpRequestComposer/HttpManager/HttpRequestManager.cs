@@ -1,102 +1,76 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HttpRequestComposer.HttpManager
 {
-    public class HttpRequestManager : IDisposable
+    public class HttpRequestManager
     {
-        protected virtual HttpClient HttpClient { get; }
-        protected virtual string Content { get; set; }
-        protected virtual string ContentType { get; set; }
-        protected virtual HttpRequestMessage HttpRequestMessage { get; }
+        private IHttpRequestModel Model { get; set; }
 
-        public HttpRequestManager() : this("http://127.0.0.1") {}
-
-        public HttpRequestManager(string url) : this(new Uri(url)) {}
-
-        public HttpRequestManager(Uri uri)
+        public HttpRequestManager(IHttpRequestModel model)
         {
-            HttpClient = new HttpClient
+            Model = model;
+        }
+
+        public virtual async Task<HttpResult> SendRequestAsync()
+        {
+            UpdateModel();
+            var httpClient = CreateHttpClient();
+            var httpRequestMessage = CreateHttpRequestMessage();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            return new HttpResult
             {
-                BaseAddress = uri
+                HttpRequestMessage = httpRequestMessage,
+                HttpResponseMessage = httpResponseMessage
+            };
+        }
+
+        public void UpdateModel()
+        {
+            if(Model.Url == null)
+                throw new ArgumentNullException(nameof(Model.Url));
+
+            if(Model.HttpMethod == null)
+                Model.HttpMethod = HttpMethod.Get;
+        }
+
+        public HttpRequestMessage CreateHttpRequestMessage()
+        {
+            return new HttpRequestMessage
+            {
+                Content = Model.Content,
+                Method = Model.HttpMethod,
+                RequestUri = Model.Url
+            };
+        }
+
+        public HttpClient CreateHttpClient()
+        {
+            var httpClient = new HttpClient
+            {
+                BaseAddress = Model.Url
             };
 
-            HttpRequestMessage = new HttpRequestMessage();
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+
+            if(Model.ContentType != null)
+                httpClient.DefaultRequestHeaders.Accept.Add(Model.ContentType);
+
+            if(Model.Headers.Any())
+                httpClient.DefaultRequestHeaders.AddRange(Model.Headers);
+
+            if(!string.IsNullOrEmpty(Model.UserAgent))
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Model.UserAgent);
+
+            return httpClient;
         }
+    }
 
-        public virtual HttpRequestManager SetContent(string contentType)
-        {
-            return SetContent(string.Empty, contentType);
-        }
-
-        public virtual HttpRequestManager SetContent(string content, string contentType)
-        {
-            Content = content;
-            ContentType = contentType;
-            return this;
-        }
-
-        public virtual HttpRequestManager AddHeaderRange(Dictionary<string, string> headers)
-        {
-            HttpClient.DefaultRequestHeaders.AddRange(headers);
-            return this;
-        }
-
-        public virtual HttpRequestManager AddHeader(string name, string value)
-        {
-            return AddHeader(name, new [] {value});
-        }
-
-        public virtual HttpRequestManager AddHeader(string name, IEnumerable<string> value)
-        {
-            HttpClient.DefaultRequestHeaders.TryAddWithoutValidation(name, value);
-            return this;
-        }
-
-        public virtual HttpResponseMessage Send(HttpMethod method) => Send(method.Method, string.Empty);
-        public virtual HttpResponseMessage Send(string method) => Send(method, string.Empty);
-        public virtual HttpResponseMessage Send(HttpMethod method, string path) => Send(method.Method, path);
-        public virtual HttpResponseMessage Send(string method, string path) => SendAsync(method, path).Result;
-        public virtual Task<HttpResponseMessage> SendAsync(HttpMethod method) => SendAsync(method.Method, string.Empty);
-        public virtual Task<HttpResponseMessage> SendAsync(string method) => SendAsync(method, string.Empty);
-        public virtual Task<HttpResponseMessage> SendAsync(HttpMethod method, string path) => SendAsync(method.Method, path);
-        public virtual Task<HttpResponseMessage> SendAsync(string method, string path)
-        {
-            try
-            {
-                var uriPath = HttpClient.BaseAddress;
-                if (!string.IsNullOrEmpty(path))
-                    uriPath = new Uri(path);
-
-                if (string.IsNullOrEmpty(ContentType))
-                    ContentType = "text/html";
-
-                HttpClient.DefaultRequestHeaders.Accept.Clear();
-                HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(ContentType));
-
-                if (!string.IsNullOrEmpty(Content))
-                    HttpRequestMessage.Content = new StringContent(Content, Encoding.UTF8, ContentType);
-
-
-                HttpRequestMessage.Method = new HttpMethod(method);
-                HttpRequestMessage.RequestUri = uriPath;
-
-                return HttpClient.SendAsync(HttpRequestMessage);
-            }
-            catch (Exception ex)
-            {
-                ex.ThrowInnerException();
-                throw;
-            }
-        }
-
-        public virtual void Dispose()
-        {
-            HttpClient.Dispose();
-        }
+    public class HttpResult
+    {
+        public HttpRequestMessage HttpRequestMessage { get; set; }
+        public HttpResponseMessage HttpResponseMessage { get; set; }
     }
 }

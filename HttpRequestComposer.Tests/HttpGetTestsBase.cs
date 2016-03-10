@@ -1,6 +1,7 @@
-﻿using System.Net.Http;
+﻿using System;
 using System.Net.Sockets;
 using HttpRequestComposer.HttpManager;
+using HttpRequestComposer.Models;
 using Xunit;
 
 namespace HttpRequestComposer.Tests
@@ -11,9 +12,12 @@ namespace HttpRequestComposer.Tests
         public void HttpRequestManagerMustThrowConnectionRefusedException()
         {
             var baseUrl = "http://localhost:9000/";
-            var requestManager = new HttpRequestManager(baseUrl);
+            var requestManager = new HttpRequestManager(new MainWindowModel
+            {
+                Url = new Uri(baseUrl)
+            });
 
-            Assert.Throws<SocketException>(() => requestManager.Send(HttpMethod.Get));
+            Assert.Throws<SocketException>(() => requestManager.SendRequestAsync().Wait());
         }
 
         [Fact]
@@ -24,11 +28,18 @@ namespace HttpRequestComposer.Tests
 
             InHost((url) =>
             {
-                var requestManager = new HttpRequestManager(url);
-                var details = requestManager.Send(HttpMethod.Get, "api/values").AsFormattedString();
-                Assert.Contains(values, details);
-                Assert.Contains(status, details);
-                Assert.Contains(url, details);
+                var requestManager = new HttpRequestManager(new MainWindowModel
+                {
+                    Url = new Uri(url)
+                });
+
+                requestManager.SendRequestAsync().ContinueWith(task =>
+                {
+                    var details = task.Result.AsFormattedString();
+                    Assert.Contains(values, details);
+                    Assert.Contains(status, details);
+                    Assert.Contains(url, details);
+                }).Wait();
             });
         }
     }

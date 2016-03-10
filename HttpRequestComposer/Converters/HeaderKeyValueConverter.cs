@@ -8,14 +8,12 @@ namespace HttpRequestComposer
 {
     public class HeaderKeyValueConverter : IValueConverter
     {
-        public static IValueConverter Instance  = new HeaderKeyValueConverter();
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var headers = value as IDictionary<string, string>;
 
             if (headers == null || !headers.Any())
-                return null;
+                return string.Empty;
 
             return headers.Select(s => $"{s.Key}:{s.Value}")
                 .Aggregate((s, m) => $"{s}{Environment.NewLine}{m}");

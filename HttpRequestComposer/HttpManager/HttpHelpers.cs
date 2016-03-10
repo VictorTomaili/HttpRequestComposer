@@ -10,35 +10,35 @@ namespace HttpRequestComposer.HttpManager
 {
     public static class HttpHelpers
     {
-        public static string AsFormattedString(this HttpResponseMessage response)
+        public static string AsFormattedString(this HttpResult result)
         {
             var builder = new StringBuilder();
 
             builder.AppendLine("General:")
-                .Append(response.RequestMessage.Method).Append(" ")
-                .Append(response.RequestMessage.RequestUri).Append(" ")
-                .Append("HTTP/").Append(response.RequestMessage.Version).Append(Environment.NewLine)
-                .Append("Host: ").Append(response.RequestMessage.RequestUri.Host).Append(Environment.NewLine)
+                .Append(result.HttpRequestMessage.Method).Append(" ")
+                .Append(result.HttpRequestMessage.RequestUri).Append(" ")
+                .Append("HTTP/").Append(result.HttpRequestMessage.Version).Append(Environment.NewLine)
+                .Append("Host: ").Append(result.HttpRequestMessage.RequestUri.Host).Append(Environment.NewLine)
                 .Append(Environment.NewLine)
                 .AppendLine("Request Headers:")
-                .AppendEnumerable(response.RequestMessage.Headers)
-                .AppendEnumerable(response.RequestMessage.Properties)
+                .AppendEnumerable(result.HttpRequestMessage.Headers)
+                .AppendEnumerable(result.HttpRequestMessage.Properties)
                 .Append(Environment.NewLine);
 
-            if (response.RequestMessage.Content != null)
-                builder.Append("Request Content: ").Append(response.RequestMessage.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
+            if (result.HttpRequestMessage.Content != null)
+                builder.Append("Request Content: ").Append(result.HttpRequestMessage.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
 
             builder.Append("Response Status: ")
-                .Append((int)response.StatusCode)
-                .Append(" (").Append(response.StatusCode).Append(")")
+                .Append((int)result.HttpResponseMessage.StatusCode)
+                .Append(" (").Append(result.HttpResponseMessage.StatusCode).Append(")")
                 .Append(Environment.NewLine)
                 .AppendLine("Response Headers:")
-                .AppendEnumerable(response.Headers)
+                .AppendEnumerable(result.HttpResponseMessage.Headers)
                 .Append(Environment.NewLine);
 
-            if (response.Content != null)
+            if (result.HttpResponseMessage.Content != null)
                 builder.AppendLine("Response Content: ")
-                    .AppendLine(response.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
+                    .AppendLine(result.HttpResponseMessage.Content.ReadAsStringAsync().Result).Append(Environment.NewLine);
 
             return builder.ToString();
         }

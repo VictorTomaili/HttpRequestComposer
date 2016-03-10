@@ -3,22 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:HttpRequestComposer.Local.MainWindow"
-        xmlns:httpRequestComposer="clr-namespace:HttpRequestComposer"
+        xmlns:texts="clr-namespace:HttpRequestComposer.Local.MainWindow"
+        xmlns:local="clr-namespace:HttpRequestComposer"
         mc:Ignorable="d"
         Height="400"
         Width="768"
         FontSize="16"
-        Title="{Binding Source={x:Static local:Texts.Title}}">
+        Title="{Binding Source={x:Static texts:Main.Title}}">
     <Window.Resources>
-        <httpRequestComposer:BooleanToVisibilityConverter
+        <local:BooleanToVisibilityConverter
             x:Key="HttpMethodComboBoxVisibility"
             True="Collapsed"
             False="Visible" />
-        <httpRequestComposer:BooleanToVisibilityConverter
+        <local:BooleanToVisibilityConverter
             x:Key="CustomHttpMethodVisibility"
             True="Visible"
             False="Collapsed" />
+        <local:StringContentTypeConverter
+            x:Key="StringContentTypeConverter"/>
+        <local:UriStringConverter
+            x:Key="UriStringConverter"/>
+        <local:HeaderKeyValueConverter
+            x:Key="HeaderKeyValueConverter"/>
+        <local:HttpMethodConverter
+            x:Key="HttpMethodConverter"/>
     </Window.Resources>
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
@@ -52,15 +60,15 @@
                 <Label HorizontalAlignment="Right"
                        VerticalContentAlignment="Center"
                        Margin="3,0,3,0"
-                       Content="{Binding Source={x:Static local:Texts.CustomMethod}}" />
+                       Content="{Binding Source={x:Static texts:Main.CustomMethod}}" />
             </CheckBox>
 
             <ComboBox x:Name="HttpMethodComboBox"
                       Grid.Column="1"
                       Margin="3"
                       VerticalContentAlignment="Center"
-                      ItemsSource="{Binding HttpMethods, Mode=OneWay}"
-                      SelectedValue="{Binding HttpMethod, Mode=TwoWay}"
+                      ItemsSource="{Binding Model.HttpMethods, Mode=OneWay}"
+                      SelectedValue="{Binding Model.HttpMethod, Mode=TwoWay, Converter={StaticResource HttpMethodConverter}}"
                       Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive, Converter={StaticResource HttpMethodComboBoxVisibility}}"/>
 
             <TextBox x:Name="CustomHttpMethod"
@@ -69,7 +77,7 @@
                      VerticalContentAlignment="Center"
                      Margin="3"
                      Padding="3,0,0,0"
-                     Text="{Binding HttpMethod, Mode=TwoWay}"
+                     Text="{Binding Model.HttpMethod, Mode=TwoWay, Converter={StaticResource HttpMethodConverter}}"
                       Visibility="{Binding IsChecked, ElementName=CustomHttpMethodActive, Converter={StaticResource CustomHttpMethodVisibility}}"/>
 
             <TextBox x:Name="HostAddressTextBox"
@@ -77,13 +85,14 @@
                      Margin="3"
                      HorizontalAlignment="Stretch"
                      VerticalContentAlignment="Center"
-                     KeyDown="HostAddressTextBox_OnEnterKeyPress"
-                     Text="{Binding Url, Mode=TwoWay}"/>
+                     KeyDown="TextBox_OnEnterKeyPress"
+                     Text="{Binding Model.Url, Mode=TwoWay, Converter={StaticResource UriStringConverter}}"/>
+
             <Button x:Name="RunButton"
                     Grid.Column="3"
                     Margin="3"
                     Click="RunButton_OnClick"
-                    Content="{Binding Source={x:Static local:Texts.Run}}"/>
+                    Content="{Binding Source={x:Static texts:Main.Run}}"/>
         </Grid>
 
         <ScrollViewer Grid.Row="1" >
@@ -112,7 +121,7 @@
                        HorizontalAlignment="Right"
                        VerticalContentAlignment="Top"
                        Margin="3"
-                       Content="{Binding Source={x:Static local:Texts.ContentType}}" />
+                       Content="{Binding Source={x:Static texts:Main.ContentType}}" />
 
                 <TextBox x:Name="ContentTypeTextBox"
                          Grid.Column="1"
@@ -120,14 +129,14 @@
                          Margin="3"
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
-                         Text="{Binding ContentType, Mode=TwoWay}"/>
+                         Text="{Binding Model.ContentType, Mode=TwoWay, Converter={StaticResource StringContentTypeConverter}}"/>
 
                 <Button x:Name="SelectContentTypeButton"
                         Grid.Column="2"
                         Grid.Row="0"
                         VerticalAlignment="Center"
                         Margin="3"
-                        Content="{Binding Source={x:Static local:Texts.Select}}"/>
+                        Content="{Binding Source={x:Static texts:Main.Select}}"/>
 
                 <Label Grid.Row="1"
                        Grid.Column="0"
@@ -135,7 +144,7 @@
                        HorizontalAlignment="Right"
                        VerticalContentAlignment="Top"
                        Margin="3"
-                       Content="{Binding Source={x:Static local:Texts.UserAgent}}"/>
+                       Content="{Binding Source={x:Static texts:Main.UserAgent}}"/>
 
                 <TextBox x:Name="UserAgentTextBox"
                          Grid.Column="1"
@@ -143,21 +152,21 @@
                          Margin="3"
                          HorizontalAlignment="Stretch"
                          VerticalContentAlignment="Center"
-                         Text="{Binding UserAgent, Mode=TwoWay}"/>
+                         Text="{Binding Model.UserAgent, Mode=TwoWay}"/>
 
                 <Button x:Name="SelectUserAgentButton"
                         Grid.Column="2"
                         Grid.Row="1"
                         VerticalAlignment="Center"
                         Margin="3"
-                        Content="{Binding Source={x:Static local:Texts.Select}}"/>
+                        Content="{Binding Source={x:Static texts:Main.Select}}"/>
 
                 <Label Grid.Row="2"
                        Grid.Column="0"
                        HorizontalAlignment="Right"
                        VerticalContentAlignment="Top"
                        Margin="3"
-                       Content="{Binding Source={x:Static local:Texts.Headers}}"/>
+                       Content="{Binding Source={x:Static texts:Main.Headers}}"/>
 
                 <Label Grid.Row="2"
                        Grid.Column="0"
@@ -165,7 +174,7 @@
                        VerticalContentAlignment="Top"
                        FontSize="12"
                        Margin="3,34,3,3"
-                       Content="{Binding Source={x:Static local:Texts.HeaderPerLine}}"/>
+                       Content="{Binding Source={x:Static texts:Main.HeaderPerLine}}"/>
 
                 <TextBox x:Name="HeadersTextBox"
                          TextWrapping="Wrap"
@@ -173,15 +182,14 @@
                          Grid.Column="1"
                          Grid.Row="2"
                          Margin="3"
-                         Text="{Binding Headers, Mode=TwoWay,
-                                Converter={x:Static httpRequestComposer:HeaderKeyValueConverter.Instance}}"/>
+                         Text="{Binding Model.Headers, Mode=TwoWay, Converter={StaticResource HeaderKeyValueConverter}}"/>
 
                 <Button x:Name="EditHeadersButton"
                         Grid.Column="2"
                         Grid.Row="2"
                         VerticalAlignment="Top"
                         Margin="3,6,3,3"
-                        Content="{Binding Source={x:Static local:Texts.Edit}}"/>
+                        Content="{Binding Source={x:Static texts:Main.Edit}}"/>
 
                 <Label Grid.Row="4"
                        Grid.Column="0"
@@ -189,7 +197,7 @@
                        HorizontalAlignment="Right"
                        VerticalContentAlignment="Top"
                        Margin="3"
-                       Content="{Binding Source={x:Static local:Texts.Body}}"/>
+                       Content="{Binding Source={x:Static texts:Main.Body}}"/>
 
                 <CheckBox x:Name="FormDataCheckBox"
                           Grid.Row="4"
@@ -198,13 +206,13 @@
                           VerticalContentAlignment="Top"
                           FontSize="12"
                           Margin="3,34,3,3"
-                          IsChecked="{Binding BodyIsFormData, Mode=TwoWay}">
+                          IsChecked="{Binding Model.BodyIsFormData, Mode=TwoWay}">
 
                     <Label VerticalAlignment="Top"
                            Margin="0"
                            VerticalContentAlignment="Top"
                            Padding="0"
-                           Content="{Binding Source={x:Static local:Texts.FormData}}"/>
+                           Content="{Binding Source={x:Static texts:Main.FormData}}"/>
                 </CheckBox>
 
                 <TextBox x:Name="BodyTextBox"
@@ -214,14 +222,14 @@
                          Grid.Row="4"
                          Margin="3"
                          HorizontalAlignment="Stretch"
-                         Text="{Binding Body, Mode=TwoWay}"/>
+                         Text="{Binding Model.Content, Mode=TwoWay, Converter={x:Static local:StringContentConverter.Instance}}"/>
 
                 <Button x:Name="EditBodyButton"
                         Grid.Column="2"
                         Grid.Row="4"
                         VerticalAlignment="Top"
                         Margin="3,6,3,3"
-                        Content="{Binding Source={x:Static local:Texts.Edit}}"/>
+                        Content="{Binding Source={x:Static texts:Main.Edit}}"/>
 
                 <GridSplitter Grid.Row="3"
                               Grid.Column="0"
@@ -246,7 +254,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
                      Margin="3,3,3,3"
-                     Text="{Binding Response, Mode=OneWay}"/>
+                     Text="{Binding Model.Response, Mode=OneWay}"/>
         </ScrollViewer>
     </Grid>
 

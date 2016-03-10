@@ -1,6 +1,6 @@
 ﻿namespace HttpRequestComposer.Local.MainWindow
 {
-    public static class Texts
+    public static class Main
     {
         public static string Title => "Http Request Composer";
         public static string CustomMethod => "Custom Method";
